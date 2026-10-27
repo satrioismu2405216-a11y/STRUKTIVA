@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="id" class="dark h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STRUKTIVA - Identifikasi Jenis Tumpuan (DPIB SMK)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#020617',
+                            900: '#03045E',
+                            800: '#023E8A',
+                            700: '#0077B6',
+                            600: '#0096C7',
+                            500: '#00B4D8',
+                            400: '#48CAE4',
+                        },
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+        }
+        h1, h2, h3, h4, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card-hover {
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            background: rgba(30, 41, 59, 0.85);
+            border-color: rgba(72, 202, 228, 0.4);
+            transform: translateY(-2px);
+        }
+        .glass-modal {
+            background: rgba(2, 6, 23, 0.92);
+            backdrop-filter: blur(16px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0077b6;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 antialiased flex flex-col md:flex-row min-h-screen overflow-x-hidden">
+
+    <!-- MOBILE HEADER & NAVIGATION BAR -->
+    <header class="md:hidden sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="handleLogoClick()">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-navy-900 to-navy-500 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-navy-400/30">
+                <i class="fa-solid fa-archway"></i>
+            </div>
+            <div>
+                <span class="font-outfit font-extrabold text-lg tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">STRUKTIVA</span>
+                <span class="block text-[9px] text-slate-400 tracking-widest uppercase font-semibold">Statika DPIB SMK</span>
+            </div>
+        </div>
+        <button id="mobile-menu-toggle" onclick="toggleMobileSidebar()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </header>
+
+    <!-- SIDEBAR NAV (Collapsible on Mobile, Drawer Style) -->
+    <aside id="sidebar-nav" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 border-r border-slate-800/80 flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 md:static md:z-auto">
+        <!-- Sidebar Logo Header -->
+        <div class="p-5 border-b border-slate-800/80 hidden md:flex items-center space-x-3 cursor-pointer" onclick="handleLogoClick()" title="Klik 3x untuk Portal Guru">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-navy-900 via-navy-700 to-navy-400 flex items-center justify-center text-white font-bold text-xl shadow-lg border border-cyan-400/30">
+                <i class="fa-solid fa-archway"></i>
+            </div>
+            <div>
+                <h1 class="font-outfit font-extrabold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-white">STRUKTIVA</h1>
+                <p class="text-[10px] text-cyan-400/80 font-medium tracking-widest uppercase">Mekanika Teknik DPIB</p>
+            </div>
+        </div>
+
+        <!-- Mobile Header inside Drawer -->
+        <div class="p-4 border-b border-slate-800 flex md:hidden items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Menu Navigasi</span>
+            <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+            <button onclick="switchView('beranda')" id="nav-beranda" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-cyan-400 bg-navy-800/40 border border-cyan-500/30">
+                <i class="fa-solid fa-house w-5 text-center text-base"></i>
+                <span>Beranda</span>
+            </button>
+
+            <button onclick="switchView('modul-materi')" id="nav-modul-materi" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+                <i class="fa-solid fa-book-open w-5 text-center text-base"></i>
+                <span>Modul Materi</span>
+            </button>
+
+            <button onclick="switchView('virtual-lab')" id="nav-virtual-lab" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+                <i class="fa-solid fa-flask w-5 text-center text-base"></i>
+                <span>Virtual Lab Statika</span>
+            </button>
+
+            <button onclick="switchView('diskusi-kelompok')" id="nav-diskusi-kelompok" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+                <i class="fa-solid fa-users-gear w-5 text-center text-base"></i>
+                <span>Diskusi Kelompok</span>
+            </button>
+
+            <button onclick="switchView('mini-games')" id="nav-mini-games" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+                <i class="fa-solid fa-gamepad w-5 text-center text-base"></i>
+                <span>Tantangan & Game</span>
+            </button>
+
+            <button onclick="switchView('evaluasi-tes')" id="nav-evaluasi-tes" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+                <i class="fa-solid fa-clipboard-check w-5 text-center text-base"></i>
+                <span>Evaluasi (Pre/Post)</span>
+            </button>
+
+            <button id="nav-teacher-portal" onclick="switchView('portal-guru')" class="nav-item hidden w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20">
+                <i class="fa-solid fa-user-shield w-5 text-center text-base"></i>
+                <span>Portal Guru</span>
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800/80 bg-slate-950/40">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 text-xs font-bold border border-slate-700">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="user-display-name" class="text-xs font-semibold text-slate-200 truncate">Siswa DPIB</p>
+                    <p class="text-[10px] text-slate-400 truncate">Kelas X SMK DPIB</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+    <!-- MAIN CONTENT VIEW AREA -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+
+        <!-- 1. VIEW BERANDA -->
+        <section id="view-beranda" class="space-y-6">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-navy-900 via-navy-800 to-slate-900 border border-slate-700/60 p-6 md:p-10 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>Guided Discovery Learning</span>
+                    </span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold font-outfit text-white tracking-tight leading-tight">
+                        STRUKTIVA — Jelajahi Struktur, Pahami Tumpuan
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                        Selamat datang di media pembelajaran interaktif Mekanika Teknik untuk siswa kelas X DPIB. Pahami perilaku gaya, jenis-jenis tumpuan jembatan & gedung, serta analisis gaya dalam secara nyata melalui laboratorium virtual.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchView('modul-materi')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-navy-600 to-cyan-500 text-white font-semibold text-sm hover:brightness-110 shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2">
+                            <span>Mulai Pelajari Materi</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                        <button onclick="switchView('virtual-lab')" class="px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-flask text-cyan-400"></i>
+                            <span>Buka Virtual Lab</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold text-slate-200 mb-4 font-outfit flex items-center space-x-2">
+                    <i class="fa-solid fa-cubes text-cyan-400"></i>
+                    <span>Modul Pembelajaran Utama</span>
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div onclick="switchView('modul-materi')" class="glass-card glass-card-hover rounded-2xl p-5 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-book text-blue-400"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 font-outfit">Modul Materi Tumpuan</h4>
+                            <p class="text-slate-400 text-xs line-clamp-2">Identifikasi Sendi, Rol, dan Jepit serta reaksi gaya dan DoF.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-semibold text-blue-400">
+                            <span>Pelajari Materi</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="switchView('virtual-lab')" class="glass-card glass-card-hover rounded-2xl p-5 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 font-outfit">Virtual Lab Real-Time</h4>
+                            <p class="text-slate-400 text-xs line-clamp-2">Simulasi gelagar sederhana, reaksi tumpuan & diagram gaya dalam SFD/NFD/BMD.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-semibold text-cyan-400">
+                            <span>Buka Simulasi</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="switchView('diskusi-kelompok')" class="glass-card glass-card-hover rounded-2xl p-5 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 font-outfit">Diskusi 3 Tahap</h4>
+                            <p class="text-slate-400 text-xs line-clamp-2">Pendapat mandiri, galeri pendapat kelas, hingga kesimpulan kelompok.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-semibold text-purple-400">
+                            <span>Gabung Diskusi</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="switchView('evaluasi-tes')" class="glass-card glass-card-hover rounded-2xl p-5 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 font-outfit">Evaluasi (Pre & Post)</h4>
+                            <p class="text-slate-400 text-xs line-clamp-2">Uji pemahaman statika dengan sistem tes acak terintegrasi.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-semibold text-emerald-400">
+                            <span>Mulai Evaluasi</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 border border-slate-800">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-slate-200 font-outfit text-base">Status Progres Pembelajaran Siswa</h4>
+                        <p class="text-slate-400 text-xs">Selesaikan Pre-Test terlebih dahulu untuk membuka akses Post-Test Evaluasi akhir.</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center px-4 py-2 rounded-xl bg-slate-900 border border-slate-800">
+                            <span class="block text-[10px] text-slate-400 font-medium">Pre-Test Status</span>
+                            <span id="badge-pretest-status" class="text-xs font-bold text-amber-400">Belum Selesai</span>
+                        </div>
+                        <div class="text-center px-4 py-2 rounded-xl bg-slate-900 border border-slate-800">
+                            <span class="block text-[10px] text-slate-400 font-medium">Post-Test Akses</span>
+                            <span id="badge-posttest-status" class="text-xs font-bold text-rose-400"><i class="fa-solid fa-lock mr-1"></i>Terkunci</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2. VIEW MODUL MATERI -->
+        <section id="view-modul-materi" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold font-outfit text-white flex items-center space-x-3">
+                        <i class="fa-solid fa-book-open text-cyan-400"></i>
+                        <span>MODUL MATERI</span>
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-400 mt-1">Studi mendalam mengenai jenis-jenis tumpuan struktur dan keseimbangan statika mekanika teknik.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="expandAllAccordions(true)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium transition-all">Buka Semua</button>
+                    <button onclick="expandAllAccordions(false)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium transition-all">Tutup Semua</button>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <button onclick="toggleAccordion('acc-1')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm">1</div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">Prinsip Keseimbangan Statika Bangunan</h3>
+                    </div>
+                    <i id="acc-1-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="acc-1" class="hidden p-6 border-t border-slate-800/80 space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <p>
+                        Dalam merancang konstruksi bangunan, struktur harus berada dalam kondisi <strong>Keseimbangan Statis</strong>. Artinya, struktur tidak boleh berpindah posisi (translasi) maupun berputar (rotasi) akibat beban yang bekerja.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <span class="block text-cyan-400 font-bold font-outfit text-lg">Σ Fx = 0</span>
+                            <span class="text-xs text-slate-400 mt-1 block">Jumlah gaya horizontal sama dengan nol.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <span class="block text-cyan-400 font-bold font-outfit text-lg">Σ Fy = 0</span>
+                            <span class="text-xs text-slate-400 mt-1 block">Jumlah gaya vertikal sama dengan nol.</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                            <span class="block text-cyan-400 font-bold font-outfit text-lg">Σ M = 0</span>
+                            <span class="text-xs text-slate-400 mt-1 block">Jumlah momen terhadap suatu titik sama dengan nol.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <button onclick="toggleAccordion('acc-2')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm">2</div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">Tumpuan Sendi (Hinge Support)</h3>
+                    </div>
+                    <i id="acc-2-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="acc-2" class="hidden p-6 border-t border-slate-800/80 space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/3 bg-slate-900 p-4 rounded-xl border border-slate-800 text-center flex flex-col items-center">
+                            <svg class="w-40 h-32" viewBox="0 0 200 150">
+                                <rect x="20" y="40" width="160" height="16" fill="#0077B6" rx="4"/>
+                                <polygon points="100,56 70,100 130,100" fill="#023E8A" stroke="#48CAE4" stroke-width="3"/>
+                                <line x1="50" y1="100" x2="150" y2="100" stroke="#94a3b8" stroke-width="4"/>
+                                <line x1="60" y1="100" x2="50" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="80" y1="100" x2="70" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="100" y1="100" x2="90" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="120" y1="100" x2="110" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="140" y1="100" x2="130" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <path d="M 100 130 L 100 108" stroke="#ef4444" stroke-width="3"/>
+                                <path d="M 40 56 L 75 56" stroke="#ef4444" stroke-width="3"/>
+                                <text x="105" y="125" fill="#ef4444" font-weight="bold" font-size="12">Ry ≠ 0</text>
+                                <text x="35" y="48" fill="#ef4444" font-weight="bold" font-size="12">Rx ≠ 0</text>
+                            </svg>
+                            <span class="text-xs text-slate-400 mt-2">Simbol Tumpuan Sendi / Engsel</span>
+                        </div>
+                        <div class="w-full md:w-2/3 space-y-3">
+                            <h4 class="font-bold text-white text-base">Karakteristik Tumpuan Sendi:</h4>
+                            <ul class="space-y-2 list-disc list-inside text-slate-300">
+                                <li>Tumpuan Sendi sanggup memberikan reaksi <strong>Gaya Vertikal (Ry ≠ 0)</strong> dan <strong>Gaya Horizontal (Rx ≠ 0)</strong>.</li>
+                                <li><strong>Momen sama dengan nol (M = 0)</strong> karena tumpuan ini mengizinkan ujung batang untuk berotasi secara bebas.</li>
+                                <li><strong>Derajat Kebebasan (DoF) = 1</strong> (hanya bebas berotasi).</li>
+                                <li><em>Contoh Penerapan:</em> Sambungan poros pin jembatan, kaki rangka atap truss baja.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <button onclick="toggleAccordion('acc-3')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">3</div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">Tumpuan Rol (Roller Support) — [Koreksi Validator]</h3>
+                    </div>
+                    <i id="acc-3-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="acc-3" class="hidden p-6 border-t border-slate-800/80 space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/3 bg-slate-900 p-4 rounded-xl border border-slate-800 text-center flex flex-col items-center">
+                            <svg class="w-40 h-32" viewBox="0 0 200 150">
+                                <rect x="20" y="40" width="160" height="16" fill="#0077B6" rx="4"/>
+                                <polygon points="100,56 75,85 125,85" fill="#023E8A" stroke="#48CAE4" stroke-width="2"/>
+                                <circle cx="82" cy="92" r="7" fill="#10b981"/>
+                                <circle cx="118" cy="92" r="7" fill="#10b981"/>
+                                <line x1="50" y1="100" x2="150" y2="100" stroke="#94a3b8" stroke-width="4"/>
+                                <line x1="60" y1="100" x2="50" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="80" y1="100" x2="70" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="100" y1="100" x2="90" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="120" y1="100" x2="110" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <line x1="140" y1="100" x2="130" y2="115" stroke="#64748b" stroke-width="2"/>
+                                <path d="M 100 130 L 100 108" stroke="#ef4444" stroke-width="3"/>
+                                <text x="105" y="125" fill="#ef4444" font-weight="bold" font-size="12">Ry ≠ 0</text>
+                                <text x="35" y="48" fill="#10b981" font-weight="bold" font-size="12">Rx = 0 (NOL)</text>
+                            </svg>
+                            <span class="text-xs text-slate-400 mt-2">Simbol Tumpuan Rol (Roda)</span>
+                        </div>
+                        <div class="w-full md:w-2/3 space-y-3">
+                            <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs">
+                                <i class="fa-solid fa-circle-check mr-1.5"></i><strong>Catatan Penting Validator:</strong> Reaksi Horizontal pada Tumpuan Rol adalah <strong>NOL (Rx = 0)</strong> karena tumpuan ini bebas bergeser secara horizontal.
+                            </div>
+                            <h4 class="font-bold text-white text-base">Karakteristik Tumpuan Rol:</h4>
+                            <ul class="space-y-2 list-disc list-inside text-slate-300">
+                                <li>Hanya menahan <strong>Gaya Vertikal (Ry ≠ 0)</strong>.</li>
+                                <li><strong>TIDAK ADA Reaksi Horizontal (Rx = 0)</strong>. Rodanya mengizinkan struktur bergeser ke kiri/kanan.</li>
+                                <li><strong>Momen sama dengan nol (M = 0)</strong> (bebas berotasi).</li>
+                                <li><strong>Derajat Kebebasan (DoF) = 2</strong> (bebas translasi horizontal & bebas rotasi).</li>
+                                <li><em>Fungsi Utama Dalam Konstruksi:</em> Dipasang pada ujung jembatan untuk memberikan ruang <strong>pemuaian dan penyusutan thermal</strong> akibat perubahan suhu udara tanpa merusak struktur.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <button onclick="toggleAccordion('acc-4')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">4</div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">Tumpuan Jepit (Fixed Support)</h3>
+                    </div>
+                    <i id="acc-4-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="acc-4" class="hidden p-6 border-t border-slate-800/80 space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/3 bg-slate-900 p-4 rounded-xl border border-slate-800 text-center flex flex-col items-center">
+                            <svg class="w-40 h-32" viewBox="0 0 200 150">
+                                <line x1="40" y1="20" x2="40" y2="130" stroke="#94a3b8" stroke-width="6"/>
+                                <line x1="40" y1="30" x2="25" y2="45" stroke="#64748b" stroke-width="2"/>
+                                <line x1="40" y1="50" x2="25" y2="65" stroke="#64748b" stroke-width="2"/>
+                                <line x1="40" y1="70" x2="25" y2="85" stroke="#64748b" stroke-width="2"/>
+                                <line x1="40" y1="90" x2="25" y2="105" stroke="#64748b" stroke-width="2"/>
+                                <line x1="40" y1="110" x2="25" y2="125" stroke="#64748b" stroke-width="2"/>
+                                <rect x="40" y="65" width="140" height="20" fill="#0077B6" rx="2"/>
+                                <path d="M 70 120 L 70 95" stroke="#ef4444" stroke-width="3"/>
+                                <path d="M 10 75 L 35 75" stroke="#ef4444" stroke-width="3"/>
+                                <path d="M 65 50 A 20 20 0 0 1 85 70" fill="none" stroke="#a855f7" stroke-width="3"/>
+                                <text x="75" y="115" fill="#ef4444" font-weight="bold" font-size="11">Ry ≠ 0</text>
+                                <text x="10" y="65" fill="#ef4444" font-weight="bold" font-size="11">Rx ≠ 0</text>
+                                <text x="75" y="45" fill="#a855f7" font-weight="bold" font-size="11">M ≠ 0</text>
+                            </svg>
+                            <span class="text-xs text-slate-400 mt-2">Simbol Tumpuan Jepit / Rigid</span>
+                        </div>
+                        <div class="w-full md:w-2/3 space-y-3">
+                            <h4 class="font-bold text-white text-base">Karakteristik Tumpuan Jepit:</h4>
+                            <ul class="space-y-2 list-disc list-inside text-slate-300">
+                                <li>Menahan 3 komponen reaksi sekaligus: <strong>Gaya Vertikal (Ry ≠ 0)</strong>, <strong>Gaya Horizontal (Rx ≠ 0)</strong>, dan <strong>Momen Tahanan (M ≠ 0)</strong>.</li>
+                                <li>Struktur dikunci secara kaku sehingga tidak bisa bergeser maupun berputar.</li>
+                                <li><strong>Derajat Kebebasan (DoF) = 0</strong> (semua pergerakan terkunci sepenuhnya).</li>
+                                <li><em>Contoh Penerapan:</em> Kolom beton bertulang yang ditanam pada fondasi plat setempat, kanopi cantilever overhang gedung.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+                <button onclick="toggleAccordion('acc-5')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">5</div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">Matrix Perbandingan Jenis Tumpuan</h3>
+                    </div>
+                    <i id="acc-5-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="acc-5" class="hidden p-6 border-t border-slate-800/80 overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-300 border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-slate-200 font-outfit uppercase text-xs border-b border-slate-800">
+                                <th class="p-3">Jenis Tumpuan</th>
+                                <th class="p-3 text-center">Reaksi Vertikal (Ry)</th>
+                                <th class="p-3 text-center">Reaksi Horizontal (Rx)</th>
+                                <th class="p-3 text-center">Reaksi Momen (M)</th>
+                                <th class="p-3 text-center">Derajat Kebebasan (DoF)</th>
+                                <th class="p-3">Keterangan Gerak</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="p-3 font-semibold text-blue-400">Sendi (Hinge)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (Ry ≠ 0)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (Rx ≠ 0)</td>
+                                <td class="p-3 text-center text-rose-400 font-bold">NOL (M = 0)</td>
+                                <td class="p-3 text-center font-bold text-slate-200">1 DoF</td>
+                                <td class="p-3 text-xs text-slate-400">Bebas Rotasi saja</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="p-3 font-semibold text-emerald-400">Rol (Roller)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (Ry ≠ 0)</td>
+                                <td class="p-3 text-center text-rose-400 font-bold">NOL (Rx = 0)</td>
+                                <td class="p-3 text-center text-rose-400 font-bold">NOL (M = 0)</td>
+                                <td class="p-3 text-center font-bold text-slate-200">2 DoF</td>
+                                <td class="p-3 text-xs text-slate-400">Bebas Translasi H & Rotasi</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/40">
+                                <td class="p-3 font-semibold text-purple-400">Jepit (Fixed)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (Ry ≠ 0)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (Rx ≠ 0)</td>
+                                <td class="p-3 text-center text-emerald-400 font-bold">ADA (M ≠ 0)</td>
+                                <td class="p-3 text-center font-bold text-slate-200">0 DoF</td>
+                                <td class="p-3 text-xs text-slate-400">Terkunci Sepenuhnya (Kaku)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. VIEW VIRTUAL LAB STATIKA -->
+        <section id="view-virtual-lab" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold font-outfit text-white flex items-center space-x-3">
+                        <i class="fa-solid fa-flask text-cyan-400"></i>
+                        <span>VIRTUAL LAB STATIKA — GELAGAR SEDERHANA</span>
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-400 mt-1">Simulasi interaktif balok tumpuan Sendi (A) - Rol (B) dengan beban titik vertikal & aksial horizontal.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleLabPanel()" class="px-3.5 py-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-xs text-cyan-300 font-semibold border border-cyan-500/30 transition-all">
+                        <i class="fa-solid fa-sliders mr-1.5"></i><span id="btn-toggle-panel-label">Tutup Control Panel</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="lab-control-panel" class="glass-card rounded-2xl p-5 border border-slate-800 space-y-5 transition-all">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider font-outfit flex items-center space-x-2">
+                        <i class="fa-solid fa-gears text-cyan-400"></i>
+                        <span>Parameter Pembebanan Balok (Panjang L = 10 Meter)</span>
+                    </h3>
+                    <span class="text-xs text-slate-400">Geser slider untuk mengubah beban & posisi</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="input-load-p" class="text-slate-300">Beban Titik Vertikal (P):</label>
+                            <span id="val-load-p" class="text-cyan-400 font-bold">25 kN</span>
+                        </div>
+                        <input type="range" id="input-load-p" min="1" max="50" value="25" step="1" oninput="updateLabSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        <div class="flex justify-between text-[10px] text-slate-500">
+                            <span>1 kN</span>
+                            <span>25 kN</span>
+                            <span>50 kN</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="input-load-pos" class="text-slate-300">Posisi Beban dari Tumpuan A (a):</label>
+                            <span id="val-load-pos" class="text-cyan-400 font-bold">4.0 Meter</span>
+                        </div>
+                        <input type="range" id="input-load-pos" min="1" max="9" value="4" step="0.5" oninput="updateLabSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        <div class="flex justify-between text-[10px] text-slate-500">
+                            <span>1.0m (Sendi A)</span>
+                            <span>5.0m (Tengah)</span>
+                            <span>9.0m (Rol B)</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <label for="input-load-h" class="text-slate-300">Gaya Aksial Horizontal (H):</label>
+                            <span id="val-load-h" class="text-amber-400 font-bold">10 kN</span>
+                        </div>
+                        <input type="range" id="input-load-h" min="0" max="30" value="10" step="2" oninput="updateLabSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                        <div class="flex justify-between text-[10px] text-slate-500">
+                            <span>0 kN</span>
+                            <span>15 kN</span>
+                            <span>30 kN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Reaksi Vertikal Sendi A (RAy)</span>
+                    <div class="flex items-baseline space-x-2 mt-1">
+                        <span id="res-ray" class="text-2xl font-extrabold font-outfit text-cyan-400">15.00</span>
+                        <span class="text-xs font-semibold text-slate-400">kN</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-1 block">Rumus: RAy = P × (L - a) / L</span>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Reaksi Vertikal Rol B (RBy)</span>
+                    <div class="flex items-baseline space-x-2 mt-1">
+                        <span id="res-rby" class="text-2xl font-extrabold font-outfit text-blue-400">10.00</span>
+                        <span class="text-xs font-semibold text-slate-400">kN</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-1 block">Rumus: RBy = P × a / L</span>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Reaksi Horizontal Sendi A (RAx)</span>
+                    <div class="flex items-baseline space-x-2 mt-1">
+                        <span id="res-rax" class="text-2xl font-extrabold font-outfit text-emerald-400">10.00</span>
+                        <span class="text-xs font-semibold text-slate-400">kN</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-1 block">Menahan gaya aksial H (ΣFx = 0)</span>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl border border-slate-800">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Reaksi Horizontal Rol B (RBx)</span>
+                    <div class="flex items-baseline space-x-2 mt-1">
+                        <span id="res-rbx" class="text-2xl font-extrabold font-outfit text-rose-400">0.00</span>
+                        <span class="text-xs font-semibold text-slate-400">kN (NOL)</span>
+                    </div>
+                    <span class="text-[10px] text-emerald-400 mt-1 block font-semibold"><i class="fa-solid fa-check mr-1"></i>Sesuai Kaidah Rol (Rx = 0)</span>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-200 text-sm font-outfit flex items-center space-x-2">
+                            <i class="fa-solid fa-draw-polygon text-cyan-400"></i>
+                            <span>1. Model Pembebanan Gelagar Sederhana (Beam Model)</span>
+                        </h4>
+                        <span class="text-xs text-slate-400">Tumpuan A (Sendi) - Tumpuan B (Rol)</span>
+                    </div>
+                    <div class="w-full overflow-hidden bg-slate-950 rounded-xl p-2 border border-slate-800">
+                        <canvas id="canvas-beam-model" class="w-full h-44 block"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-200 text-sm font-outfit flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-area text-blue-400"></i>
+                            <span>2. Bidang Lintang / Shear Force Diagram (SFD / Q)</span>
+                        </h4>
+                        <span id="info-sfd-max" class="text-xs font-bold text-blue-400">Qmax = +15.00 kN / -10.00 kN</span>
+                    </div>
+                    <div class="w-full overflow-hidden bg-slate-950 rounded-xl p-2 border border-slate-800">
+                        <canvas id="canvas-sfd" class="w-full h-40 block"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-200 text-sm font-outfit flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-bar text-emerald-400"></i>
+                            <span>3. Bidang Normal / Axial Force Diagram (NFD / N)</span>
+                        </h4>
+                        <span id="info-nfd-max" class="text-xs font-bold text-emerald-400">N (Tekan) = -10.00 kN</span>
+                    </div>
+                    <div class="w-full overflow-hidden bg-slate-950 rounded-xl p-2 border border-slate-800">
+                        <canvas id="canvas-nfd" class="w-full h-36 block"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-200 text-sm font-outfit flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-line text-purple-400"></i>
+                            <span>4. Bidang Momen / Bending Moment Diagram (BMD / M)</span>
+                        </h4>
+                        <span id="info-bmd-max" class="text-xs font-bold text-purple-400">Mmax = +60.00 kNm</span>
+                    </div>
+                    <div class="w-full overflow-hidden bg-slate-950 rounded-xl p-2 border border-slate-800">
+                        <canvas id="canvas-bmd" class="w-full h-44 block"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. VIEW ALUR DISKUSI KELOMPOK -->
+        <section id="view-diskusi-kelompok" class="hidden space-y-6">
+            <div class="pb-4 border-b border-slate-800">
+                <h2 class="text-2xl font-bold font-outfit text-white flex items-center space-x-3">
+                    <i class="fa-solid fa-users-gear text-purple-400"></i>
+                    <span>ALUR DISKUSI KELOMPOK INTERAKTIF</span>
+                </h2>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Alur diskusi 3 Tahap berlandaskan Guided Discovery Learning untuk menganalisis studi kasus tumpuan.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-900 rounded-2xl border border-slate-800">
+                <button onclick="setDiscussionStage(1)" id="btn-stage-1" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-white bg-purple-600 shadow-md">
+                    Tahap 1: Pendapat Mandiri
+                </button>
+                <button onclick="setDiscussionStage(2)" id="btn-stage-2" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">
+                    Tahap 2: Galeri Kelas
+                </button>
+                <button onclick="setDiscussionStage(3)" id="btn-stage-3" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">
+                    Tahap 3: Kesimpulan Kelompok
+                </button>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/30 bg-purple-950/20 space-y-2">
+                <div class="flex items-center space-x-2 text-purple-400 font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-building-circle-exclamation"></i>
+                    <span>Studi Kasus Jembatan Rangka Baja DPIB</span>
+                </div>
+                <h3 class="font-bold text-slate-100 text-base font-outfit">
+                    Mengapa Ujung Jembatan Rangka Baja Menggunakan Kombinasi Tumpuan Sendi dan Tumpuan Rol?
+                </h3>
+                <p class="text-slate-300 text-xs md:text-sm leading-relaxed">
+                    Sebuah jembatan jalan raya rangka baja sepanjang 40 meter menghubungkan dua muara sungai. Pada ujung kiri (Titik A) dipasang tumpuan Sendi, sedangkan pada ujung kanan (Titik B) dipasang tumpuan Rol. Jelaskan analisis mekanika teknik kalian mengenai alasan pemilihan kombinasi tumpuan tersebut!
+                </p>
+            </div>
+
+            <div id="discussion-stage-1" class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h4 class="font-bold text-slate-200 text-base font-outfit border-b border-slate-800 pb-3">
+                    Tahap 1 — Pendapat & Analisis Mandiri Siswa
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="input-student-name" class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap Siswa:</label>
+                        <input type="text" id="input-student-name" placeholder="Masukkan nama lengkap..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label for="input-student-class" class="block text-xs font-semibold text-slate-300 mb-1">Kelas / Rombel DPIB:</label>
+                        <input type="text" id="input-student-class" value="X DPIB 1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="input-student-opinion" class="block text-xs font-semibold text-slate-300 mb-1">Pendapat Mandiri Anda:</label>
+                    <textarea id="input-student-opinion" rows="4" placeholder="Tuliskan alasan teknis pemilihan tumpuan sendi & rol di ujung jembatan..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-100 focus:outline-none focus:border-purple-500"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="submitIndividualOpinion()" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-600/20">
+                        Kirim Pendapat Mandiri & Lanjut Ke Galeri <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="discussion-stage-2" class="hidden space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-slate-200 text-base font-outfit">
+                        Tahap 2 — Galeri Pendapat Seluruh Siswa Kelas
+                    </h4>
+                    <span class="text-xs text-purple-400 font-semibold">Transparan & Real-time</span>
+                </div>
+                <div id="gallery-opinion-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div class="pt-4 flex justify-end">
+                    <button onclick="setDiscussionStage(3)" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all">
+                        Lanjut Ke Kesimpulan Kelompok <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="discussion-stage-3" class="hidden glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h4 class="font-bold text-slate-200 text-base font-outfit border-b border-slate-800 pb-3">
+                    Tahap 3 — Form Kesimpulan Akhir Kelompok
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="select-group-number" class="block text-xs font-semibold text-slate-300 mb-1">Pilih Kelompok Diskusi:</label>
+                        <select id="select-group-number" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-purple-500">
+                            <option value="Kelompok 1 (Struktur Jembatan)">Kelompok 1 (Struktur Jembatan)</option>
+                            <option value="Kelompok 2 (Gedung Bertingkat)">Kelompok 2 (Gedung Bertingkat)</option>
+                            <option value="Kelompok 3 (Kanopi Cantilever)">Kelompok 3 (Kanopi Cantilever)</option>
+                            <option value="Kelompok 4 (Rangka Atap Baja)">Kelompok 4 (Rangka Atap Baja)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="input-group-members" class="block text-xs font-semibold text-slate-300 mb-1">Anggota Kelompok:</label>
+                        <input type="text" id="input-group-members" placeholder="Nama anggota dipisah koma..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="input-group-summary" class="block text-xs font-semibold text-slate-300 mb-1">Kesimpulan Akhir Hasil Diskusi Kelompok:</label>
+                    <textarea id="input-group-summary" rows="5" placeholder="Rumuskan kesimpulan akhir kelompok..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-100 focus:outline-none focus:border-purple-500"></textarea>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <span class="text-xs text-slate-400"><i class="fa-solid fa-cloud-arrow-up mr-1 text-purple-400"></i>Kesimpulan otomatis terhubung ke Portal Guru.</span>
+                    <button onclick="submitGroupConclusion()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-600/20">
+                        Kirim Kesimpulan Kelompok <i class="fa-solid fa-paper-plane ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5. VIEW MINI GAMES & TANTANGAN -->
+        <section id="view-mini-games" class="hidden space-y-6">
+            <div class="pb-4 border-b border-slate-800">
+                <h2 class="text-2xl font-bold font-outfit text-white flex items-center space-x-3">
+                    <i class="fa-solid fa-gamepad text-amber-400"></i>
+                    <span>TANTANGAN & MINI GAMES TUMPUAN</span>
+                </h2>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Uji ketangkasan menganalisis kasus nyata konstruksi dengan mencocokkan tumpuan yang tepat!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="h-32 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800">
+                            <i class="fa-solid fa-bridge-water text-5xl text-blue-400"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-100 text-base font-outfit">Kasus 1: Perluasan Suhu Panjang Jembatan</h4>
+                        <p class="text-xs text-slate-300">Tumpuan ujung jembatan baja dirancang agar gelagar jembatan bisa memanjang saat cuaca panas terik tanpa melengkung patah.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase">Pilih Jenis Tumpuan Tepat:</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="checkGameAnswer(1, 'Sendi')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Sendi</button>
+                            <button onclick="checkGameAnswer(1, 'Rol')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700 text-cyan-400">Rol</button>
+                            <button onclick="checkGameAnswer(1, 'Jepit')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Jepit</button>
+                        </div>
+                        <div id="game-feedback-1" class="hidden p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="h-32 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800">
+                            <i class="fa-solid fa-umbrella text-5xl text-purple-400"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-100 text-base font-outfit">Kasus 2: Kanopi Teritisan Menggantung</h4>
+                        <p class="text-xs text-slate-300">Struktur kanopi beton melayang di atas pintu masuk gedung tanpa adanya tiang penyangga tambahan di ujung luar.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase">Pilih Jenis Tumpuan Tepat:</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="checkGameAnswer(2, 'Sendi')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Sendi</button>
+                            <button onclick="checkGameAnswer(2, 'Rol')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Rol</button>
+                            <button onclick="checkGameAnswer(2, 'Jepit')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700 text-purple-400">Jepit</button>
+                        </div>
+                        <div id="game-feedback-2" class="hidden p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="h-32 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800">
+                            <i class="fa-solid fa-tower-observation text-5xl text-emerald-400"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-100 text-base font-outfit">Kasus 3: Kaki Rangka Kuda-Kuda Atap</h4>
+                        <p class="text-xs text-slate-300">Sambungan baut tunggal pada kaki kuda-kuda atap kayu/baja yang menahan gaya geser horizontal dan beban angin.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase">Pilih Jenis Tumpuan Tepat:</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="checkGameAnswer(3, 'Sendi')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700 text-blue-400">Sendi</button>
+                            <button onclick="checkGameAnswer(3, 'Rol')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Rol</button>
+                            <button onclick="checkGameAnswer(3, 'Jepit')" class="py-2 bg-slate-900 hover:bg-slate-800 text-xs font-semibold rounded-lg border border-slate-700">Jepit</button>
+                        </div>
+                        <div id="game-feedback-3" class="hidden p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 6. VIEW EVALUASI -->
+        <section id="view-evaluasi-tes" class="hidden space-y-6">
+            <div class="pb-4 border-b border-slate-800">
+                <h2 class="text-2xl font-bold font-outfit text-white flex items-center space-x-3">
+                    <i class="fa-solid fa-clipboard-check text-emerald-400"></i>
+                    <span>EVALUASI PRE-TEST & POST-TEST</span>
+                </h2>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Sistem tes acak terintegrasi untuk mengukur kognitif sebelum dan sesudah pembelajaran.</p>
+            </div>
+
+            <div class="flex space-x-3 border-b border-slate-800 pb-2">
+                <button onclick="switchTestTab('pre')" id="tab-btn-pre" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-600/20">
+                    <i class="fa-solid fa-file-pen mr-2"></i>1. PRE-TEST (Awal)
+                </button>
+                <button onclick="switchTestTab('post')" id="tab-btn-post" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800 text-slate-400 hover:text-white relative">
+                    <i class="fa-solid fa-lock mr-2" id="icon-post-lock"></i>2. POST-TEST (Evaluasi Akhir)
+                </button>
+            </div>
+
+            <div id="test-container-pre" class="glass-card p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-100 font-outfit">Ujian Pre-Test Identifikasi Tumpuan</h3>
+                        <p class="text-xs text-slate-400">Soal dan opsi jawaban diacak secara otomatis.</p>
+                    </div>
+                    <span class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-semibold">
+                        Status: Siap Dikerjakan
+                    </span>
+                </div>
+
+                <div id="quiz-pre-questions" class="space-y-6"></div>
+
+                <div class="pt-4 border-t border-slate-800 flex justify-end">
+                    <button onclick="submitTest('pre')" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-600/20">
+                        Submit & Selesaikan Pre-Test <i class="fa-solid fa-check-double ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="test-container-post" class="hidden">
+                <div id="post-test-locked-screen" class="glass-card p-10 rounded-2xl border border-slate-800 text-center space-y-4">
+                    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-3xl font-bold mx-auto">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-outfit text-white">Post-Test Masih Terkunci!</h3>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto">
+                        Prasyarat Unlock: Anda wajib menyelesaikan dan mengirimkan hasil <strong>Pre-Test</strong> terlebih dahulu untuk membuka akses Post-Test.
+                    </p>
+                    <button onclick="switchTestTab('pre')" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-semibold text-xs transition-all border border-slate-700">
+                        Buka & Kerjakan Pre-Test Sekarang
+                    </button>
+                </div>
+
+                <div id="post-test-unlocked-screen" class="hidden glass-card p-6 rounded-2xl border border-slate-800 space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-100 font-outfit">Ujian Post-Test Evaluasi Akhir</h3>
+                            <p class="text-xs text-slate-400">Soal dan opsi acak terverifikasi.</p>
+                        </div>
+                        <span class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-semibold">
+                            <i class="fa-solid fa-lock-open mr-1"></i>Akses Terbuka
+                        </span>
+                    </div>
+
+                    <div id="quiz-post-questions" class="space-y-6"></div>
+
+                    <div class="pt-4 border-t border-slate-800 flex justify-end">
+                        <button onclick="submitTest('post')" class="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all shadow-lg shadow-cyan-600/20">
+                            Submit & Selesaikan Post-Test <i class="fa-solid fa-paper-plane ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 7. VIEW PORTAL GURU TERSEMBUNYI -->
+        <section id="view-portal-guru" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-amber-500/30 bg-amber-950/20 p-4 rounded-2xl border">
+                <div>
+                    <h2 class="text-2xl font-bold font-outfit text-amber-400 flex items-center space-x-3">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>PORTAL GURU — STRUKTIVA TEACHER CMS</span>
+                    </h2>
+                    <p class="text-xs text-amber-200/80 mt-1">Area Akses Terbatas Khusus Pengajar & Guru Mekanika Teknik DPIB SMK.</p>
+                </div>
+                <button onclick="lockTeacherPortal()" class="px-3.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold transition-all">
+                    <i class="fa-solid fa-lock mr-1.5"></i>Kunci Portal Guru
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 p-1.5 bg-slate-900 rounded-2xl border border-slate-800">
+                <button onclick="setTeacherTab(1)" id="btn-teacher-tab-1" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-amber-950 bg-amber-400 shadow-md">
+                    📊 1. Rekap Nilai & Diskusi
+                </button>
+                <button onclick="setTeacherTab(2)" id="btn-teacher-tab-2" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">
+                    📝 2. Kelola & Edit Soal
+                </button>
+                <button onclick="setTeacherTab(3)" id="btn-teacher-tab-3" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">
+                    📚 3. Tambah Materi Baru
+                </button>
+            </div>
+
+            <!-- TEACHER TAB 1: REKAP NILAI -->
+            <div id="teacher-tab-1" class="glass-card p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 class="font-bold text-base text-slate-200 font-outfit">Rekap Perbandingan Nilai Pre-Test vs Post-Test Siswa</h3>
+                    <button onclick="exportDataToCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all flex items-center space-x-2 shadow-lg shadow-emerald-600/20">
+                        <i class="fa-solid fa-file-excel text-sm"></i>
+                        <span>EXPORT KE EXCEL (.CSV)</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                    <table class="w-full text-xs text-left text-slate-300">
+                        <thead class="bg-slate-900 text-slate-200 font-outfit uppercase border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3 text-center">Nilai Pre-Test</th>
+                                <th class="p-3 text-center">Nilai Post-Test</th>
+                                <th class="p-3 text-center">Peningkatan (Gain)</th>
+                                <th class="p-3">Pendapat Mandiri</th>
+                                <th class="p-3">Kesimpulan Kelompok</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-teacher-recap-body" class="divide-y divide-slate-800/60"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TEACHER TAB 2: EDIT BANK SOAL & SINKRONISASI -->
+            <div id="teacher-tab-2" class="hidden glass-card p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-200 font-outfit">Kelola, Edit, & Tambah Bank Soal Evaluasi</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Semua perubahan soal otomatis tersimpan di peramban ini.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="exportQuestionsJSON()" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all flex items-center space-x-1.5" title="Salin array kode soal untuk ditempel di file HTML utama">
+                            <i class="fa-solid fa-code"></i>
+                            <span>Salin Kode JSON Soal</span>
+                        </button>
+                        <button onclick="resetQuestionsToDefault()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-300 border border-rose-500/30 font-semibold text-xs transition-all">
+                            <i class="fa-solid fa-rotate-left mr-1"></i>Reset Default
+                        </button>
+                        <button onclick="openQuestionModal('add')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs transition-all flex items-center space-x-1.5">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Soal Baru</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="teacher-question-list" class="space-y-4"></div>
+            </div>
+
+            <!-- TEACHER TAB 3: TAMBAH MATERI BARU -->
+            <div id="teacher-tab-3" class="hidden glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 class="font-bold text-base text-slate-200 font-outfit border-b border-slate-800 pb-3">
+                    Publikasikan Materi / Studi Kasus Baru
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Judul Materi / Case Study:</label>
+                        <input type="text" id="input-new-topic-title" placeholder="Contoh: Analisis Momen Pada Gelagar Cantilever..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Isi Penjelasan Materi (HTML Didukung):</label>
+                        <textarea id="input-new-topic-content" rows="6" placeholder="Tuliskan uraian materi statika baru di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-100 focus:outline-none focus:border-amber-400"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="addNewMaterialTopic()" class="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs transition-all">
+                            <i class="fa-solid fa-upload mr-1.5"></i>Publikasikan Ke Modul Materi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PIN SECURITY MODAL FOR TEACHER PORTAL -->
+    <div id="modal-pin-access" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 glass-modal">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-amber-500/40 space-y-5 text-center shadow-2xl">
+            <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold mx-auto">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold font-outfit text-white">Akses Portal Guru</h3>
+                <p class="text-xs text-slate-400 mt-1">Masukkan PIN Otentikasi Pengajar (Default: <strong>1234</strong>)</p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="input-teacher-pin" maxlength="6" placeholder="Masukkan 4 digit PIN..." class="w-full text-center tracking-widest text-lg font-bold bg-slate-900 border border-slate-700 rounded-xl py-2.5 text-white focus:outline-none focus:border-amber-400">
+                <div id="pin-error-msg" class="hidden text-xs text-rose-400 font-semibold">PIN Salah! Silakan coba lagi.</div>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="closePinModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-all">Batal</button>
+                <button onclick="verifyTeacherPin()" class="w-1/2 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold text-xs transition-all">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT QUESTION -->
+    <div id="modal-edit-question" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 glass-modal overflow-y-auto">
+        <div class="glass-card max-w-lg w-full p-6 rounded-3xl border border-slate-700 space-y-4 text-left shadow-2xl my-8">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="modal-q-title" class="font-bold text-slate-100 font-outfit text-base">Edit Soal Evaluasi</h3>
+                <button onclick="closeQuestionModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="modal-q-id">
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Kategori Ujian:</label>
+                    <select id="modal-q-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                        <option value="pre">Pre-Test</option>
+                        <option value="post">Post-Test</option>
+                        <option value="both">Keduanya (Pre & Post)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Teks Pertanyaan / Soal:</label>
+                    <textarea id="modal-q-text" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-200"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Pilihan A:</label>
+                        <input type="text" id="modal-opt-0" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Pilihan B:</label>
+                        <input type="text" id="modal-opt-1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Pilihan C:</label>
+                        <input type="text" id="modal-opt-2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Pilihan D:</label>
+                        <input type="text" id="modal-opt-3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Kunci Jawaban Benar (Index 0-3 / Opsi A-D):</label>
+                    <select id="modal-q-correct" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                        <option value="0">Opsi A</option>
+                        <option value="1">Opsi B</option>
+                        <option value="2">Opsi C</option>
+                        <option value="3">Opsi D</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeQuestionModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Batal</button>
+                <button onclick="saveQuestionFromModal()" class="px-5 py-2 rounded-xl bg-amber-500 text-amber-950 text-xs font-bold">Simpan Soal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST MESSAGE -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-50 hidden transition-all duration-300 transform translate-y-10">
+        <div id="toast-content" class="px-4 py-3 rounded-2xl glass-card border border-cyan-500/40 text-xs font-semibold text-cyan-300 flex items-center space-x-3 shadow-2xl">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-base"></i>
+            <span id="toast-text">Pesan notifikasi di sini</span>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT APPLICATION ENGINE -->
+    <script>
+        /* ==========================================================================
+           GLOBAL STATE & DATA STRUCTURES
+           ========================================================================== */
+        let currentView = 'beranda';
+        let logoClickCounter = 0;
+        let logoClickTimer = null;
+        let isTeacherUnlocked = false;
+        let isPreTestCompleted = false;
+
+        let studentProfile = {
+            name: "Siswa DPIB",
+            class: "X DPIB 1",
+            preScore: null,
+            postScore: null,
+            opinion: "",
+            groupSummary: "",
+            groupName: ""
+        };
+
+        let discussionGallery = [
+            {
+                id: 1,
+                name: "Budi Santoso",
+                class: "X DPIB 1",
+                opinion: "Tumpuan sendi dipasang di ujung A untuk menahan geser horizontal dan beban vertikal, sedangkan rol di ujung B memberi ruang pemuaian batang baja saat siang terik."
+            },
+            {
+                id: 2,
+                name: "Siti Rahmawati",
+                class: "X DPIB 2",
+                opinion: "Jika kedua ujung memakai tumpuan sendi, jembatan akan melengkung atau retak saat terjadi muai panjang akibat perubahan cuaca ekstrim."
+            }
+        ];
+
+        // Master Default Question Bank
+        const defaultQuestionBank = [
+            {
+                id: 1,
+                type: "pre",
+                question: "Tumpuan yang sanggup menahan gaya vertikal (Ry) dan gaya horizontal (Rx), tetapi tidak menahan momen (M = 0) dinamakan tumpuan...",
+                options: ["Sendi (Hinge)", "Rol (Roller)", "Jepit (Fixed)", "Bebas"],
+                correct: 0
+            },
+            {
+                id: 2,
+                type: "pre",
+                question: "Sesuai kaidah mekanika teknik yang benar, reaksi horizontal pada tumpuan Rol (Roller) adalah...",
+                options: ["Sama dengan gaya vertikal", "TIDAK ADA / NOL (Rx = 0)", "Sama dengan momen", "Selalu 100 kN"],
+                correct: 1
+            },
+            {
+                id: 3,
+                type: "pre",
+                question: "Berapa Derajat Kebebasan (Degree of Freedom / DoF) yang dimiliki oleh Tumpuan Jepit?",
+                options: ["2 DoF", "1 DoF", "0 DoF (Kaku Sepenuhnya)", "3 DoF"],
+                correct: 2
+            },
+            {
+                id: 4,
+                type: "post",
+                question: "Mengapa pada konstruksi jembatan rangka baja panjang wajib dipasang tumpuan Rol di salah satu ujungnya?",
+                options: ["Untuk memperindah estetika jembatan", "Menampung pemuaian dan penyusutan thermal baja", "Menambah beban mati jembatan", "Mencegah rotasi ujung balok"],
+                correct: 1
+            },
+            {
+                id: 5,
+                type: "post",
+                question: "Suatu balok sederhana panjang 10m ditumpu Sendi (A) dan Rol (B). Jika diberi beban titik vertikal P = 30 kN di tengah bentang (5m), maka besar reaksi RAy dan RBy adalah...",
+                options: ["RAy = 15 kN, RBy = 15 kN", "RAy = 30 kN, RBy = 0 kN", "RAy = 10 kN, RBy = 20 kN", "RAy = 0 kN, RBy = 30 kN"],
+                correct: 0
+            },
+            {
+                id: 6,
+                type: "post",
+                question: "Tumpuan Jepit sanggup menahan 3 komponen gaya sekaligus, yaitu...",
+                options: ["Rx, Ry, dan Momen (M)", "Hanya Ry dan M", "Hanya Rx dan Ry", "Hanya Momen (M)"],
+                correct: 0
+            }
+        ];
+
+        // Load questions from localStorage if available, or fall back to default
+        let questionBank = [];
+        function loadQuestions() {
+            const saved = localStorage.getItem('struktiva_questions');
+            if (saved) {
+                try {
+                    questionBank = JSON.parse(saved);
+                } catch(e) {
+                    questionBank = [...defaultQuestionBank];
+                }
+            } else {
+                questionBank = [...defaultQuestionBank];
+            }
+        }
+
+        function saveQuestionsToLocalStorage() {
+            localStorage.setItem('struktiva_questions', JSON.stringify(questionBank));
+        }
+
+        let activePreQuestions = [];
+        let activePostQuestions = [];
+
+        /* ==========================================================================
+           INITIALIZATION ON LOAD
+           ========================================================================== */
+        window.onload = function() {
+            loadQuestions();
+            initLabSimulators();
+            renderDiscussionGallery();
+            setupKeyboardShortcuts();
+            prepareRandomizedTests();
+            renderTeacherRecap();
+            renderTeacherQuestions();
+        };
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar-nav');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function switchView(viewId) {
+            currentView = viewId;
+            const views = ['beranda', 'modul-materi', 'virtual-lab', 'diskusi-kelompok', 'mini-games', 'evaluasi-tes', 'portal-guru'];
+            views.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                if (el) el.classList.add('hidden');
+            });
+
+            const selected = document.getElementById('view-' + viewId);
+            if (selected) selected.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('text-cyan-400', 'bg-navy-800/40', 'border', 'border-cyan-500/30');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeBtn = document.getElementById('nav-' + viewId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400');
+                activeBtn.classList.add('text-cyan-400', 'bg-navy-800/40', 'border', 'border-cyan-500/30');
+            }
+
+            const sidebar = document.getElementById('sidebar-nav');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                toggleMobileSidebar();
+            }
+
+            if (viewId === 'virtual-lab') {
+                setTimeout(updateLabSimulation, 100);
+            }
+        }
+
+        function showToast(text, isError = false) {
+            const toast = document.getElementById('toast-notification');
+            const icon = document.getElementById('toast-icon');
+            const toastText = document.getElementById('toast-text');
+            const toastContent = document.getElementById('toast-content');
+
+            toastText.innerText = text;
+            if (isError) {
+                icon.className = "fa-solid fa-triangle-exclamation text-rose-400";
+                toastContent.className = "px-4 py-3 rounded-2xl glass-card border border-rose-500/40 text-xs font-semibold text-rose-300 flex items-center space-x-3 shadow-2xl";
+            } else {
+                icon.className = "fa-solid fa-circle-check text-cyan-400";
+                toastContent.className = "px-4 py-3 rounded-2xl glass-card border border-cyan-500/40 text-xs font-semibold text-cyan-300 flex items-center space-x-3 shadow-2xl";
+            }
+
+            toast.classList.remove('hidden', 'translate-y-10');
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'hidden');
+            }, 3500);
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                if (icon) icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                if (icon) icon.classList.remove('rotate-180');
+            }
+        }
+
+        function expandAllAccordions(expand) {
+            for (let i = 1; i <= 5; i++) {
+                const content = document.getElementById('acc-' + i);
+                const icon = document.getElementById('acc-' + i + '-icon');
+                if (content) {
+                    if (expand) {
+                        content.classList.remove('hidden');
+                        if (icon) icon.classList.add('rotate-180');
+                    } else {
+                        content.classList.add('hidden');
+                        if (icon) icon.classList.remove('rotate-180');
+                    }
+                }
+            }
+        }
+
+        /* ==========================================================================
+           VIRTUAL LAB SIMULATOR
+           ========================================================================== */
+        let isLabPanelOpen = true;
+        function toggleLabPanel() {
+            const panel = document.getElementById('lab-control-panel');
+            const label = document.getElementById('btn-toggle-panel-label');
+            if (isLabPanelOpen) {
+                panel.classList.add('hidden');
+                label.innerText = "Buka Control Panel";
+                isLabPanelOpen = false;
+            } else {
+                panel.classList.remove('hidden');
+                label.innerText = "Tutup Control Panel";
+                isLabPanelOpen = true;
+            }
+        }
+
+        function initLabSimulators() {
+            window.addEventListener('resize', updateLabSimulation);
+            updateLabSimulation();
+        }
+
+        function updateLabSimulation() {
+            const P = parseFloat(document.getElementById('input-load-p').value);
+            const a = parseFloat(document.getElementById('input-load-pos').value);
+            const H = parseFloat(document.getElementById('input-load-h').value);
+            const L = 10.0;
+
+            const RAy = (P * (L - a)) / L;
+            const RBy = (P * a) / L;
+            const RAx = H;
+            const RBx = 0;
+            const Mmax = RAy * a;
+
+            document.getElementById('val-load-p').innerText = P + " kN";
+            document.getElementById('val-load-pos').innerText = a.toFixed(1) + " Meter";
+            document.getElementById('val-load-h').innerText = H + " kN";
+
+            document.getElementById('res-ray').innerText = RAy.toFixed(2);
+            document.getElementById('res-rby').innerText = RBy.toFixed(2);
+            document.getElementById('res-rax').innerText = RAx.toFixed(2);
+            document.getElementById('res-rbx').innerText = RBx.toFixed(2);
+
+            document.getElementById('info-sfd-max').innerText = "Qmax = +" + RAy.toFixed(2) + " kN / -" + RBy.toFixed(2) + " kN";
+            document.getElementById('info-nfd-max').innerText = H > 0 ? "N (Tekan) = -" + H.toFixed(2) + " kN" : "N = 0 kN";
+            document.getElementById('info-bmd-max').innerText = "Mmax = +" + Mmax.toFixed(2) + " kNm";
+
+            drawBeamModelCanvas(P, a, H, L, RAy, RBy, RAx);
+            drawSFDCanvas(RAy, RBy, a, L);
+            drawNFDCanvas(H, a, L);
+            drawBMDCanvas(Mmax, a, L);
+        }
+
+        function prepareCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return null;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio || 600;
+            canvas.height = rect.height * window.devicePixelRatio || 200;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawBeamModelCanvas(P, a, H, L, RAy, RBy, RAx) {
+            const c = prepareCanvas('canvas-beam-model');
+            if (!c) return;
+            const { ctx, width, height } = c;
+
+            const padX = 50;
+            const beamY = height / 2 + 10;
+            const beamLen = width - 2 * padX;
+            const loadX = padX + (a / L) * beamLen;
+
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#0077B6';
+            ctx.beginPath();
+            ctx.moveTo(padX, beamY);
+            ctx.lineTo(padX + beamLen, beamY);
+            ctx.stroke();
+
+            ctx.fillStyle = '#023E8A';
+            ctx.strokeStyle = '#48CAE4';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padX, beamY + 4);
+            ctx.lineTo(padX - 15, beamY + 30);
+            ctx.lineTo(padX + 15, beamY + 30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(padX + beamLen, beamY + 4);
+            ctx.lineTo(padX + beamLen - 15, beamY + 22);
+            ctx.lineTo(padX + beamLen + 15, beamY + 22);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(padX + beamLen - 8, beamY + 28, 4, 0, Math.PI * 2);
+            ctx.arc(padX + beamLen + 8, beamY + 28, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#ef4444';
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(loadX, beamY - 45);
+            ctx.lineTo(loadX, beamY - 6);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(loadX - 6, beamY - 14);
+            ctx.lineTo(loadX + 6, beamY - 14);
+            ctx.lineTo(loadX, beamY - 4);
+            ctx.fill();
+
+            ctx.font = 'bold 11px Inter';
+            ctx.fillText(`P = ${P} kN`, loadX + 8, beamY - 30);
+
+            if (H > 0) {
+                ctx.strokeStyle = '#f59e0b';
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.moveTo(loadX - 45, beamY);
+                ctx.lineTo(loadX - 8, beamY);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(loadX - 14, beamY - 5);
+                ctx.lineTo(loadX - 14, beamY + 5);
+                ctx.lineTo(loadX - 6, beamY);
+                ctx.fill();
+
+                ctx.fillText(`H = ${H} kN`, loadX - 45, beamY - 8);
+            }
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px Inter';
+            ctx.fillText('Sendi (A)', padX - 20, beamY + 45);
+            ctx.fillText('Rol (B)', padX + beamLen - 15, beamY + 45);
+            ctx.fillText(`a = ${a}m`, loadX - 15, beamY + 20);
+        }
+
+        function drawSFDCanvas(RAy, RBy, a, L) {
+            const c = prepareCanvas('canvas-sfd');
+            if (!c) return;
+            const { ctx, width, height } = c;
+
+            const padX = 50;
+            const zeroY = height / 2;
+            const beamLen = width - 2 * padX;
+            const loadX = padX + (a / L) * beamLen;
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#475569';
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(padX, zeroY);
+            ctx.lineTo(padX + beamLen, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const maxQ = Math.max(RAy, RBy, 1);
+            const scaleY = (height / 2 - 20) / maxQ;
+
+            const yPos = zeroY - RAy * scaleY;
+            const yNeg = zeroY + RBy * scaleY;
+
+            ctx.fillStyle = 'rgba(0, 119, 182, 0.25)';
+            ctx.strokeStyle = '#0096C7';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(padX, zeroY);
+            ctx.lineTo(padX, yPos);
+            ctx.lineTo(loadX, yPos);
+            ctx.lineTo(loadX, yNeg);
+            ctx.lineTo(padX + beamLen, yNeg);
+            ctx.lineTo(padX + beamLen, zeroY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 11px Outfit';
+            ctx.fillText(`+${RAy.toFixed(2)} kN`, padX + 10, yPos - 6);
+            ctx.fillText(`-${RBy.toFixed(2)} kN`, padX + beamLen - 60, yNeg + 15);
+        }
+
+        function drawNFDCanvas(H, a, L) {
+            const c = prepareCanvas('canvas-nfd');
+            if (!c) return;
+            const { ctx, width, height } = c;
+
+            const padX = 50;
+            const zeroY = height / 2;
+            const beamLen = width - 2 * padX;
+            const loadX = padX + (a / L) * beamLen;
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#475569';
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(padX, zeroY);
+            ctx.lineTo(padX + beamLen, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            if (H > 0) {
+                const scaleY = (height / 2 - 20) / 30;
+                const yTekan = zeroY + H * scaleY;
+
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+
+                ctx.beginPath();
+                ctx.moveTo(padX, zeroY);
+                ctx.lineTo(padX, yTekan);
+                ctx.lineTo(loadX, yTekan);
+                ctx.lineTo(loadX, zeroY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#34d399';
+                ctx.font = 'bold 11px Outfit';
+                ctx.fillText(`N (Tekan) = -${H.toFixed(2)} kN`, padX + 15, yTekan + 14);
+            } else {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px Inter';
+                ctx.fillText('NOL (N = 0) - Tidak ada gaya aksial', width / 2 - 90, zeroY - 8);
+            }
+        }
+
+        function drawBMDCanvas(Mmax, a, L) {
+            const c = prepareCanvas('canvas-bmd');
+            if (!c) return;
+            const { ctx, width, height } = c;
+
+            const padX = 50;
+            const zeroY = 30;
+            const beamLen = width - 2 * padX;
+            const loadX = padX + (a / L) * beamLen;
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#475569';
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(padX, zeroY);
+            ctx.lineTo(padX + beamLen, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const maxScale = Math.max(Mmax, 10);
+            const scaleY = (height - 60) / maxScale;
+            const yMmax = zeroY + Mmax * scaleY;
+
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.25)';
+            ctx.strokeStyle = '#a855f7';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(padX, zeroY);
+            ctx.lineTo(loadX, yMmax);
+            ctx.lineTo(padX + beamLen, zeroY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#c084fc';
+            ctx.font = 'bold 11px Outfit';
+            ctx.fillText(`Mmax = +${Mmax.toFixed(2)} kNm`, loadX - 45, yMmax + 16);
+        }
+
+        /* ==========================================================================
+           DISKUSI KELOMPOK
+           ========================================================================== */
+        function setDiscussionStage(stage) {
+            document.getElementById('discussion-stage-1').classList.add('hidden');
+            document.getElementById('discussion-stage-2').classList.add('hidden');
+            document.getElementById('discussion-stage-3').classList.add('hidden');
+
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById('btn-stage-' + i);
+                btn.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white";
+            }
+
+            document.getElementById('discussion-stage-' + stage).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-stage-' + stage);
+            activeBtn.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-white bg-purple-600 shadow-md";
+        }
+
+        function submitIndividualOpinion() {
+            const name = document.getElementById('input-student-name').value.trim();
+            const sClass = document.getElementById('input-student-class').value.trim();
+            const opinion = document.getElementById('input-student-opinion').value.trim();
+
+            if (!name || !opinion) {
+                showToast("Mohon isi Nama Lengkap dan Pendapat Mandiri Anda!", true);
+                return;
+            }
+
+            studentProfile.name = name;
+            studentProfile.class = sClass;
+            studentProfile.opinion = opinion;
+
+            document.getElementById('user-display-name').innerText = name;
+
+            discussionGallery.unshift({
+                id: Date.now(),
+                name: name,
+                class: sClass,
+                opinion: opinion
+            });
+
+            renderDiscussionGallery();
+            renderTeacherRecap();
+            showToast("Pendapat Mandiri berhasil dikirim ke Galeri Kelas!");
+            setDiscussionStage(2);
+        }
+
+        function renderDiscussionGallery() {
+            const container = document.getElementById('gallery-opinion-container');
+            container.innerHTML = "";
+
+            discussionGallery.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-xl border border-slate-800 space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                        <span class="font-bold text-xs text-purple-300 font-outfit"><i class="fa-solid fa-user-circle mr-1.5"></i>${escapeHtml(item.name)}</span>
+                        <span class="text-[10px] text-slate-400 px-2 py-0.5 rounded bg-slate-900 border border-slate-800">${escapeHtml(item.class)}</span>
+                    </div>
+                    <p class="text-xs text-slate-300 italic leading-relaxed">"${escapeHtml(item.opinion)}"</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function submitGroupConclusion() {
+            const groupName = document.getElementById('select-group-number').value;
+            const summary = document.getElementById('input-group-summary').value.trim();
+
+            if (!summary) {
+                showToast("Mohon tuliskan Kesimpulan Akhir Hasil Diskusi Kelompok!", true);
+                return;
+            }
+
+            studentProfile.groupName = groupName;
+            studentProfile.groupSummary = summary;
+
+            renderTeacherRecap();
+            showToast("Kesimpulan Kelompok berhasil terkirim ke Portal Guru!");
+        }
+
+        /* ==========================================================================
+           MINI GAMES
+           ========================================================================== */
+        function checkGameAnswer(caseNum, answer) {
+            const fb = document.getElementById('game-feedback-' + caseNum);
+            fb.classList.remove('hidden');
+
+            if (caseNum === 1) {
+                if (answer === 'Rol') {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-check-circle mr-1'></i><strong>TEPAT SEKALI!</strong> Tumpuan Rol (Rx = 0) membebaskan gelagar bergeser mendatar untuk menampung muai panjang akibat panas.";
+                } else {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-xmark-circle mr-1'></i><strong>Belum Tepat.</strong> Tumpuan " + answer + " menahan gerak horizontal sehingga jembatan tidak punya ruang muai.";
+                }
+            } else if (caseNum === 2) {
+                if (answer === 'Jepit') {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-check-circle mr-1'></i><strong>TEPAT SEKALI!</strong> Tumpuan Jepit memberikan reaksi Momen (M ≠ 0) untuk menahan balok melayang cantilever agar tidak patah berputar.";
+                } else {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-xmark-circle mr-1'></i><strong>Kurang Tepat.</strong> Tumpuan " + answer + " memiliki Momen = 0 sehingga kanopi akan roboh berputar ke bawah.";
+                }
+            } else if (caseNum === 3) {
+                if (answer === 'Sendi') {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-check-circle mr-1'></i><strong>BENAR!</strong> Tumpuan Sendi mengizinkan rotasi engsel pin pada kaki kuda-kuda dan menahan reaksi Ry & Rx.";
+                } else {
+                    fb.className = "p-3 rounded-lg text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                    fb.innerHTML = "<i class='fa-solid fa-xmark-circle mr-1'></i><strong>Belum Tepat.</strong> Coba tinjau kembali karakteristik reaksi Sendi.";
+                }
+            }
+        }
+
+        /* ==========================================================================
+           SISTEM EVALUASI
+           ========================================================================== */
+        function switchTestTab(tab) {
+            if (tab === 'pre') {
+                document.getElementById('test-container-pre').classList.remove('hidden');
+                document.getElementById('test-container-post').classList.add('hidden');
+                document.getElementById('tab-btn-pre').className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-600/20";
+                document.getElementById('tab-btn-post').className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800 text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('test-container-pre').classList.add('hidden');
+                document.getElementById('test-container-post').classList.remove('hidden');
+                document.getElementById('tab-btn-post').className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-cyan-600 text-white shadow-lg shadow-cyan-600/20";
+                document.getElementById('tab-btn-pre').className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800 text-slate-400 hover:text-white";
+            }
+        }
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function prepareRandomizedTests() {
+            const prePool = questionBank.filter(q => q.type === 'pre' || q.type === 'both');
+            const postPool = questionBank.filter(q => q.type === 'post' || q.type === 'both');
+
+            activePreQuestions = shuffleArray(prePool);
+            activePostQuestions = shuffleArray(postPool);
+
+            renderTestQuestions('pre', activePreQuestions, 'quiz-pre-questions');
+            renderTestQuestions('post', activePostQuestions, 'quiz-post-questions');
+        }
+
+        function renderTestQuestions(testType, questions, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+
+            if (questions.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada soal pada kategori ini.</p>`;
+                return;
+            }
+
+            questions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/80 p-5 rounded-xl border border-slate-800 space-y-3";
+
+                let optionsHTML = "";
+                q.options.forEach((opt, oIdx) => {
+                    optionsHTML += `
+                        <label class="flex items-start space-x-3 p-3 rounded-lg bg-slate-950/60 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                            <input type="radio" name="q_${testType}_${q.id}" value="${oIdx}" class="mt-0.5 text-cyan-500 focus:ring-0">
+                            <span class="text-xs text-slate-200">${escapeHtml(opt)}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-md bg-slate-800 text-cyan-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">${idx + 1}</span>
+                        <h4 class="font-semibold text-slate-200 text-xs md:text-sm leading-relaxed">${escapeHtml(q.question)}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                        ${optionsHTML}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function submitTest(testType) {
+            const questions = testType === 'pre' ? activePreQuestions : activePostQuestions;
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q_${testType}_${q.id}"]:checked`);
+                if (selected) {
+                    answeredCount++;
+                    if (parseInt(selected.value) === q.correct) {
+                        correctCount++;
+                    }
+                }
+            });
+
+            if (answeredCount < questions.length) {
+                showToast("Mohon jawab seluruh soal sebelum menekan submit!", true);
+                return;
+            }
+
+            const finalScore = Math.round((correctCount / questions.length) * 100);
+
+            if (testType === 'pre') {
+                studentProfile.preScore = finalScore;
+                isPreTestCompleted = true;
+
+                document.getElementById('badge-pretest-status').innerText = "Selesai (" + finalScore + ")";
+                document.getElementById('badge-pretest-status').className = "text-xs font-bold text-emerald-400";
+
+                document.getElementById('badge-posttest-status').innerHTML = "Terbuka";
+                document.getElementById('badge-posttest-status').className = "text-xs font-bold text-cyan-400";
+
+                document.getElementById('icon-post-lock').className = "fa-solid fa-lock-open mr-2 text-cyan-400";
+                document.getElementById('post-test-locked-screen').classList.add('hidden');
+                document.getElementById('post-test-unlocked-screen').classList.remove('hidden');
+
+                showToast("Pre-Test Selesai! Nilai Anda: " + finalScore + ". Access Post-Test terbuka!");
+            } else {
+                studentProfile.postScore = finalScore;
+                document.getElementById('badge-posttest-status').innerText = "Selesai (" + finalScore + ")";
+                showToast("Post-Test Selesai! Nilai Evaluasi Akhir: " + finalScore);
+            }
+
+            renderTeacherRecap();
+        }
+
+        /* ==========================================================================
+           PORTAL GURU TERSEMBUNYI & MANAGEMENT
+           ========================================================================== */
+        function handleLogoClick() {
+            logoClickCounter++;
+            if (logoClickTimer) clearTimeout(logoClickTimer);
+
+            if (logoClickCounter >= 3) {
+                logoClickCounter = 0;
+                openTeacherPinModal();
+            } else {
+                logoClickTimer = setTimeout(() => {
+                    logoClickCounter = 0;
+                }, 1000);
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            window.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'G' || e.key === 'g')) {
+                    e.preventDefault();
+                    openTeacherPinModal();
+                }
+            });
+        }
+
+        function openTeacherPinModal() {
+            if (isTeacherUnlocked) {
+                switchView('portal-guru');
+                return;
+            }
+            document.getElementById('modal-pin-access').classList.remove('hidden');
+            document.getElementById('input-teacher-pin').value = "";
+            document.getElementById('pin-error-msg').classList.add('hidden');
+        }
+
+        function closePinModal() {
+            document.getElementById('modal-pin-access').classList.add('hidden');
+        }
+
+        function verifyTeacherPin() {
+            const pin = document.getElementById('input-teacher-pin').value.trim();
+            if (pin === '1234') {
+                isTeacherUnlocked = true;
+                closePinModal();
+                document.getElementById('nav-teacher-portal').classList.remove('hidden');
+                switchView('portal-guru');
+                showToast("Akses Portal Guru Berhasil Diaktifkan!");
+            } else {
+                document.getElementById('pin-error-msg').classList.remove('hidden');
+            }
+        }
+
+        function lockTeacherPortal() {
+            isTeacherUnlocked = false;
+            document.getElementById('nav-teacher-portal').classList.add('hidden');
+            switchView('beranda');
+            showToast("Portal Guru telah dikunci kembali.");
+        }
+
+        function setTeacherTab(tab) {
+            document.getElementById('teacher-tab-1').classList.add('hidden');
+            document.getElementById('teacher-tab-2').classList.add('hidden');
+            document.getElementById('teacher-tab-3').classList.add('hidden');
+
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById('btn-teacher-tab-' + i);
+                btn.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white";
+            }
+
+            document.getElementById('teacher-tab-' + tab).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-teacher-tab-' + tab);
+            activeBtn.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-amber-950 bg-amber-400 shadow-md";
+        }
+
+        function renderTeacherRecap() {
+            const tbody = document.getElementById('table-teacher-recap-body');
+            tbody.innerHTML = "";
+
+            const preStr = studentProfile.preScore !== null ? studentProfile.preScore : "Belum";
+            const postStr = studentProfile.postScore !== null ? studentProfile.postScore : "Belum";
+            let gainStr = "-";
+            if (studentProfile.preScore !== null && studentProfile.postScore !== null) {
+                const diff = studentProfile.postScore - studentProfile.preScore;
+                gainStr = (diff >= 0 ? "+" : "") + diff;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-900/40";
+            tr.innerHTML = `
+                <td class="p-3 font-semibold text-white">${escapeHtml(studentProfile.name)}</td>
+                <td class="p-3 text-slate-400">${escapeHtml(studentProfile.class)}</td>
+                <td class="p-3 text-center font-bold text-amber-400">${preStr}</td>
+                <td class="p-3 text-center font-bold text-cyan-400">${postStr}</td>
+                <td class="p-3 text-center font-bold text-emerald-400">${gainStr}</td>
+                <td class="p-3 text-xs text-slate-300 max-w-xs truncate" title="${escapeHtml(studentProfile.opinion)}">${escapeHtml(studentProfile.opinion || "Belum Mengisi")}</td>
+                <td class="p-3 text-xs text-slate-300 max-w-xs truncate" title="${escapeHtml(studentProfile.groupSummary)}">${escapeHtml(studentProfile.groupSummary || "Belum Mengisi")}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function exportDataToCSV() {
+            let csv = "Nama Siswa,Kelas,Nilai Pre-Test,Nilai Post-Test,Peningkatan,Pendapat Mandiri,Kesimpulan Kelompok\n";
+            const name = `"${studentProfile.name}"`;
+            const sClass = `"${studentProfile.class}"`;
+            const pre = studentProfile.preScore !== null ? studentProfile.preScore : "";
+            const post = studentProfile.postScore !== null ? studentProfile.postScore : "";
+            const gain = (studentProfile.preScore !== null && studentProfile.postScore !== null) ? (studentProfile.postScore - studentProfile.preScore) : "";
+            const op = `"${studentProfile.opinion.replace(/"/g, '""')}"`;
+            const sum = `"${studentProfile.groupSummary.replace(/"/g, '""')}"`;
+
+            csv += `${name},${sClass},${pre},${post},${gain},${op},${sum}\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "REKAP_STRUKTIVA_DPIB.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("File Rekap CSV berhasil diunduh!");
+        }
+
+        function renderTeacherQuestions() {
+            const container = document.getElementById('teacher-question-list');
+            container.innerHTML = "";
+
+            questionBank.forEach(q => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-amber-400">
+                                Kategori: ${q.type.toUpperCase()}
+                            </span>
+                            <span class="text-xs text-slate-400">ID Soal: #${q.id}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-200">${escapeHtml(q.question)}</p>
+                        <p class="text-[11px] text-emerald-400">Kunci Benar: Opsi ${String.fromCharCode(65 + q.correct)} (${escapeHtml(q.options[q.correct])})</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openQuestionModal('edit', ${q.id})" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium">
+                            <i class="fa-solid fa-pen-to-square mr-1"></i>Edit
+                        </button>
+                        <button onclick="deleteQuestion(${q.id})" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-xs font-medium border border-rose-500/30">
+                            <i class="fa-solid fa-trash mr-1"></i>Hapus
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openQuestionModal(mode, qId = null) {
+            document.getElementById('modal-edit-question').classList.remove('hidden');
+            if (mode === 'add') {
+                document.getElementById('modal-q-title').innerText = "Tambah Soal Evaluasi Baru";
+                document.getElementById('modal-q-id').value = "";
+                document.getElementById('modal-q-text').value = "";
+                document.getElementById('modal-opt-0').value = "";
+                document.getElementById('modal-opt-1').value = "";
+                document.getElementById('modal-opt-2').value = "";
+                document.getElementById('modal-opt-3').value = "";
+                document.getElementById('modal-q-correct').value = "0";
+            } else if (mode === 'edit' && qId) {
+                const q = questionBank.find(item => item.id === qId);
+                if (q) {
+                    document.getElementById('modal-q-title').innerText = "Edit / Ganti Soal #" + q.id;
+                    document.getElementById('modal-q-id').value = q.id;
+                    document.getElementById('modal-q-type').value = q.type;
+                    document.getElementById('modal-q-text').value = q.question;
+                    document.getElementById('modal-opt-0').value = q.options[0] || "";
+                    document.getElementById('modal-opt-1').value = q.options[1] || "";
+                    document.getElementById('modal-opt-2').value = q.options[2] || "";
+                    document.getElementById('modal-opt-3').value = q.options[3] || "";
+                    document.getElementById('modal-q-correct').value = q.correct;
+                }
+            }
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('modal-edit-question').classList.add('hidden');
+        }
+
+        function saveQuestionFromModal() {
+            const qId = document.getElementById('modal-q-id').value;
+            const type = document.getElementById('modal-q-type').value;
+            const text = document.getElementById('modal-q-text').value.trim();
+            const opt0 = document.getElementById('modal-opt-0').value.trim();
+            const opt1 = document.getElementById('modal-opt-1').value.trim();
+            const opt2 = document.getElementById('modal-opt-2').value.trim();
+            const opt3 = document.getElementById('modal-opt-3').value.trim();
+            const correct = parseInt(document.getElementById('modal-q-correct').value);
+
+            if (!text || !opt0 || !opt1) {
+                showToast("Mohon isi Teks Pertanyaan dan Opsi Jawaban minimal A & B!", true);
+                return;
+            }
+
+            if (qId) {
+                const q = questionBank.find(item => item.id === parseInt(qId));
+                if (q) {
+                    q.type = type;
+                    q.question = text;
+                    q.options = [opt0, opt1, opt2, opt3];
+                    q.correct = correct;
+                }
+            } else {
+                const newId = questionBank.length > 0 ? Math.max(...questionBank.map(i => i.id)) + 1 : 1;
+                questionBank.push({
+                    id: newId,
+                    type: type,
+                    question: text,
+                    options: [opt0, opt1, opt2, opt3],
+                    correct: correct
+                });
+            }
+
+            saveQuestionsToLocalStorage();
+            closeQuestionModal();
+            prepareRandomizedTests();
+            renderTeacherQuestions();
+            showToast("Soal Berhasil Disimpan & Diperbarui!");
+        }
+
+        function deleteQuestion(qId) {
+            questionBank = questionBank.filter(q => q.id !== qId);
+            saveQuestionsToLocalStorage();
+            prepareRandomizedTests();
+            renderTeacherQuestions();
+            showToast("Soal berhasil dihapus.");
+        }
+
+        function resetQuestionsToDefault() {
+            if (confirm("Apakah Anda yakin ingin mengembalikan bank soal ke pengaturan awal/default?")) {
+                questionBank = [...defaultQuestionBank];
+                saveQuestionsToLocalStorage();
+                prepareRandomizedTests();
+                renderTeacherQuestions();
+                showToast("Bank Soal telah di-reset ke default!");
+            }
+        }
+
+        function exportQuestionsJSON() {
+            const jsonString = JSON.stringify(questionBank, null, 4);
+            navigator.clipboard.writeText(jsonString).then(() => {
+                showToast("Kode JSON Soal berhasil disalin ke clipboard!");
+            }).catch(() => {
+                prompt("Salin kode JSON di bawah ini:", jsonString);
+            });
+        }
+
+        function addNewMaterialTopic() {
+            const title = document.getElementById('input-new-topic-title').value.trim();
+            const content = document.getElementById('input-new-topic-content').value.trim();
+
+            if (!title || !content) {
+                showToast("Mohon isi Judul dan Isi Penjelasan Materi Baru!", true);
+                return;
+            }
+
+            const modulSection = document.getElementById('view-modul-materi');
+            const newAccId = 'acc-' + (document.querySelectorAll('[id^="acc-"]').length + 1);
+
+            const card = document.createElement('div');
+            card.className = "glass-card rounded-2xl overflow-hidden border border-slate-800";
+            card.innerHTML = `
+                <button onclick="toggleAccordion('${newAccId}')" class="w-full px-6 py-4 flex items-center justify-between bg-slate-900/60 hover:bg-slate-800/80 transition-all text-left">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-star"></i></div>
+                        <h3 class="font-bold font-outfit text-slate-200 text-base">${escapeHtml(title)}</h3>
+                    </div>
+                    <i id="${newAccId}-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                <div id="${newAccId}" class="hidden p-6 border-t border-slate-800/80 space-y-4 text-sm text-slate-300 leading-relaxed">
+                    ${content}
+                </div>
+            `;
+            modulSection.appendChild(card);
+
+            document.getElementById('input-new-topic-title').value = "";
+            document.getElementById('input-new-topic-content').value = "";
+
+            showToast("Materi Baru Berhasil Dipublikasikan ke Modul!");
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
